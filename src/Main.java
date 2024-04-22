@@ -13,7 +13,7 @@ public class Main extends Application {
         Button button = new Button(b);
 
         // Ajout d'un gestionnaire d'événements au bouton
-        button.setOnAction(e -> System.out.println("Bonjour, JavaFX!"));
+        button.setOnAction(e -> System.out.println("Oui Oui je suis le roi du monde eheh"));
 
         // Création d'un conteneur de mise en page
         StackPane root = new StackPane();
