@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Noeud {
     private int id;
@@ -60,9 +61,23 @@ public class Noeud {
         return res;
     }
 
+    public String getName(){
+        return this.name;
+    }
 
+    public int[] getChildren(){
+        return this.children;
+    }
 
+    public boolean isEmpty(){
+        return this.children.length == 0;
+    }
 
-
-
+    public List<Noeud> CreateChildren(){
+        List<Noeud> enfants = new ArrayList<>();
+        for(int i = 0; i < this.children.length; i++){
+            enfants.add(new Noeud("C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\treeoflife_nodes_simplified.csv", "C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\treeoflife_links_simplified.csv", this.children[i]));
+        }
+        return enfants;
+    }
 }
