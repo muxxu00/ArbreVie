@@ -1,13 +1,14 @@
 package Main;
+
 import Model.Noeud;
 import Vue.Affichage;
+import Controler.Mouse;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -15,11 +16,19 @@ import java.util.List;
 
 public class Main extends Application {
 
+    private Mouse mouse = new Mouse();
     @Override
     public void start(Stage primaryStage) {
         Canvas canvas = new Canvas(1500, 1000);
 
-        Noeud racine = new Noeud("ressources/treeoflife_nodes_simplified.csv", "ressources/treeoflife_links_simplified.csv", 1);
+        // Créer un ScrollPane pour contenir le Canvas
+        ScrollPane scrollPane = new ScrollPane(canvas);
+        scrollPane.setPannable(true); // Permettre le déplacement par glissement
+
+        // Gestionnaire d'événements de la souris pour le ScrollPane
+        scrollPane.setOnScroll(this::onMouseScroll);
+
+        Noeud racine = new Noeud("ressources/treeoflife_nodes.csv", "ressources/treeoflife_links.csv", 1);
 
         Affichage.dessinerArbre(canvas, racine);
 
@@ -29,6 +38,8 @@ public class Main extends Application {
         primaryStage.setTitle("Arbre de Vie");
         primaryStage.show();
     }
+
+
 
     /*private TreeView<String> createTreeView(Model.Noeud rootNode) {
         // Création de l'arbre de vue à partir du nœud racine

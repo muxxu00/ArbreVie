@@ -27,7 +27,7 @@ public class Affichage {
 
         // Dessiner le nom du noeud
         gc.setFill(Color.WHITE);
-        gc.setFont(Font.font("Arial", BOLD));
+        gc.setFont(Font.font("Arial", 7));
         gc.fillText(noeud.getName(), x - RAYON_NOEUD + 5, y + 5);
 
         // Dessiner les enfants
