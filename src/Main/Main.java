@@ -16,24 +16,29 @@ import java.util.List;
 
 public class Main extends Application {
 
-    private Mouse mouse = new Mouse();
+    private Mouse mouse ;
     @Override
     public void start(Stage primaryStage) {
-        Canvas canvas = new Canvas(1500, 1000);
+        Canvas canvas = new Canvas(3000, 2500);
 
         // Créer un ScrollPane pour contenir le Canvas
         ScrollPane scrollPane = new ScrollPane(canvas);
         scrollPane.setPannable(true); // Permettre le déplacement par glissement
 
+        mouse = new Mouse(scrollPane);
+
         // Gestionnaire d'événements de la souris pour le ScrollPane
-        scrollPane.setOnScroll(this::onMouseScroll);
+        scrollPane.setOnScroll(event -> mouse.onMouseScroll(event));
 
         Noeud racine = new Noeud("ressources/treeoflife_nodes.csv", "ressources/treeoflife_links.csv", 1);
 
         Affichage.dessinerArbre(canvas, racine);
 
-        StackPane root = new StackPane(canvas);
-        Scene scene = new Scene(root, 800, 600);
+        StackPane root = new StackPane(scrollPane);
+        root.setFocusTraversable(true);
+
+        Scene scene = new Scene(root, 1500, 1000);
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Arbre de Vie");
         primaryStage.show();
