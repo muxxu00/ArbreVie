@@ -24,20 +24,29 @@ public class Main extends Application {
         // Créer un ScrollPane pour contenir le Canvas
         ScrollPane scrollPane = new ScrollPane(canvas);
         scrollPane.setPannable(true); // Permettre le déplacement par glissement
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Désactive la barre de défilement horizontale
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Désactive la barre de défilement verticale
 
         mouse = new Mouse(scrollPane);
 
         // Gestionnaire d'événements de la souris pour le ScrollPane
-        scrollPane.setOnScroll(event -> mouse.onMouseScroll(event));
+        scrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
+            if (event.isControlDown()) {
+                mouse.onMouseScroll(event); // Appelle votre gestionnaire de souris pour le zoom
+                event.consume(); // Consomme l'événement pour éviter le défilement par défaut
+            }
+        });
 
         Noeud racine = new Noeud("ressources/treeoflife_nodes.csv", "ressources/treeoflife_links.csv", 1);
 
-        Affichage.dessinerArbre(canvas, racine);
+
 
         StackPane root = new StackPane(scrollPane);
         root.setFocusTraversable(true);
 
-        Scene scene = new Scene(root, 1500, 1000);
+        Scene scene = new Scene(root, 1920, 1000);
+
+        Affichage.dessinerArbre(canvas, racine, scene);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Arbre de Vie");

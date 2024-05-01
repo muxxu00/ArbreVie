@@ -1,5 +1,17 @@
 package Model;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +33,15 @@ public class Noeud {
         for (int i = 0; i < finis.length; i++) {
             if (finis[i][0].equals(Integer.toString(id))) {
                 this.name = finis[i][1];
-                this.isLeaf = Boolean.parseBoolean(finis[i][2]);
-                this.toLorgLink = Boolean.parseBoolean(finis[i][3]);
-                this.extinct = Boolean.parseBoolean(finis[i][4]);
-                this.confidence = Integer.parseInt(finis[i][5]);
-                this.phylesis = Integer.parseInt(finis[i][6]);
+                this.isLeaf = !Boolean.parseBoolean(finis[i][3]);
+                if(finis[i][4]=="0"){
+                    this.toLorgLink = false;
+                }else{
+                    this.toLorgLink = true;
+                }
+                this.extinct = Boolean.parseBoolean(finis[i][5]);
+                this.confidence = Integer.parseInt(finis[i][6]);
+                this.phylesis = Integer.parseInt(finis[i][7]);
                 break;
             }
         }
@@ -47,20 +63,63 @@ public class Noeud {
     }
 
 
-    public String afficheNoeud(){
-        String res = "id : " + this.id + "\n";
-        res += "name : " + this.name + "\n";
-        res += "children : ";
-        for(int i = 0; i < this.children.length; i++){
-            res += this.children[i] + " ";
+    public VBox afficheNoeud() {
+        VBox vbox = new VBox();
+
+        // Affichage de l'id
+        Text idText = new Text("  id : " + this.id);
+        vbox.getChildren().add(idText);
+
+        // Affichage du nom
+        Text nameText = new Text("  name : " + this.name);
+        vbox.getChildren().add(nameText);
+
+        // Affichage des enfants
+        StringBuilder childrenString = new StringBuilder("  children : ");
+        for (int i = 0; i < this.children.length; i++) {
+            childrenString.append(this.children[i]).append(" ");
         }
-        res += "\n";
-        res += "isLeaf : " + this.isLeaf + "\n";
-        res += "toLorgLink : " + this.toLorgLink + "\n";
-        res += "extinct : " + this.extinct + "\n";
-        res += "confidence : " + this.confidence + "\n";
-        res += "phylesis : " + this.phylesis + "\n";
-        return res;
+        Text childrenText = new Text(childrenString.toString());
+        vbox.getChildren().add(childrenText);
+
+        // Affichage de l'état de feuille
+        Text isLeafText = new Text("  isLeaf : " + this.isLeaf);
+        vbox.getChildren().add(isLeafText);
+
+        Text istoLorgLinkText = new Text("  toLorgLink : " + this.toLorgLink);
+        vbox.getChildren().add(istoLorgLinkText);
+
+        // Création du lien
+        String toLorgLink = String.format("http://tolweb.org/%s/%d", this.name, this.id);
+        Hyperlink hyperlink = new Hyperlink(toLorgLink);
+
+        // Ajout d'un EventHandler pour ouvrir le lien dans un navigateur externe lorsque le lien est cliqué
+        hyperlink.setOnAction(event -> {
+            try {
+                Desktop.getDesktop().browse(new URI(toLorgLink));
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Affichage du lien
+        Text toLorgLinkText = new Text("  toLorgLink : ");
+        HBox linkBox = new HBox(new Text("  toLorgLink : "), hyperlink);
+        vbox.getChildren().add(linkBox);
+
+        // Affichage de l'état extinct
+        Text extinctText = new Text("  extinct : " + this.extinct);
+        vbox.getChildren().add(extinctText);
+
+        // Affichage du niveau de confiance
+        Text confidenceText = new Text("  confidence : " + this.confidence);
+        vbox.getChildren().add(confidenceText);
+
+        // Affichage du niveau de phylésie
+        Text phylesisText = new Text("  phylesis : " + this.phylesis);
+        vbox.getChildren().add(phylesisText);
+
+        return vbox;
     }
 
     public String getName(){
@@ -71,6 +130,13 @@ public class Noeud {
         return this.children;
     }
 
+    public boolean isLeaf(){
+        return children.length == 0;
+    }
+
+    public boolean isToLorgLink(){
+        return this.toLorgLink;
+    }
     public boolean isEmpty(){
         return this.children.length == 0;
     }
