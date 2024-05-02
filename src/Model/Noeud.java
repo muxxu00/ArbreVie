@@ -17,6 +17,7 @@ import java.util.List;
 
 public class Noeud {
     private int id;
+    private Noeud parent;
     private String name;
     private int[] children;
     private boolean isLeaf;
@@ -25,11 +26,11 @@ public class Noeud {
     private int confidence;
     private int phylesis;
 
-    public Noeud(String PathfichierNode, String PathfichierLink, int id) {
+    public Noeud(String PathfichierNode, String PathfichierLink, int id, Noeud parent) {
         this.id = id;
         String[][] finis = CSVReaderExample.readCSV(PathfichierNode);
         String[][] finis2 = CSVReaderExample.readCSV(PathfichierLink);
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         for (int i = 0; i < finis.length; i++) {
             if (finis[i][0].equals(Integer.toString(id))) {
                 this.name = finis[i][1];
@@ -66,13 +67,21 @@ public class Noeud {
     public VBox afficheNoeud() {
         VBox vbox = new VBox();
 
+        // Affichage du titre
+        Text titleText = new Text("Info Du Noeud Central :");
+        titleText.setStyle("-fx-font-weight: bold");
+        vbox.getChildren().add(titleText);
+        vbox.getChildren().add(new Text("\n"));
+
         // Affichage de l'id
         Text idText = new Text("  id : " + this.id);
         vbox.getChildren().add(idText);
+        vbox.getChildren().add(new Text("\n"));
 
         // Affichage du nom
         Text nameText = new Text("  name : " + this.name);
         vbox.getChildren().add(nameText);
+        vbox.getChildren().add(new Text("\n"));
 
         // Affichage des enfants
         StringBuilder childrenString = new StringBuilder("  children : ");
@@ -81,16 +90,20 @@ public class Noeud {
         }
         Text childrenText = new Text(childrenString.toString());
         vbox.getChildren().add(childrenText);
+        vbox.getChildren().add(new Text("\n"));
 
         // Affichage de l'état de feuille
         Text isLeafText = new Text("  isLeaf : " + this.isLeaf);
         vbox.getChildren().add(isLeafText);
+        vbox.getChildren().add(new Text("\n"));
 
         Text istoLorgLinkText = new Text("  toLorgLink : " + this.toLorgLink);
         vbox.getChildren().add(istoLorgLinkText);
+        vbox.getChildren().add(new Text("\n"));
 
         // Création du lien
-        String toLorgLink = String.format("http://tolweb.org/%s/%d", this.name, this.id);
+        String encodedName = this.name.replace(" ", "%20");
+        String toLorgLink = String.format("http://tolweb.org/%s/%d", encodedName, this.id);
         Hyperlink hyperlink = new Hyperlink(toLorgLink);
 
         // Ajout d'un EventHandler pour ouvrir le lien dans un navigateur externe lorsque le lien est cliqué
@@ -106,18 +119,22 @@ public class Noeud {
         Text toLorgLinkText = new Text("  toLorgLink : ");
         HBox linkBox = new HBox(new Text("  toLorgLink : "), hyperlink);
         vbox.getChildren().add(linkBox);
+        vbox.getChildren().add(new Text("\n"));
 
         // Affichage de l'état extinct
         Text extinctText = new Text("  extinct : " + this.extinct);
         vbox.getChildren().add(extinctText);
+        vbox.getChildren().add(new Text("\n"));
 
         // Affichage du niveau de confiance
         Text confidenceText = new Text("  confidence : " + this.confidence);
         vbox.getChildren().add(confidenceText);
+        vbox.getChildren().add(new Text("\n"));
 
         // Affichage du niveau de phylésie
         Text phylesisText = new Text("  phylesis : " + this.phylesis);
         vbox.getChildren().add(phylesisText);
+        vbox.getChildren().add(new Text("\n"));
 
         return vbox;
     }
@@ -140,11 +157,14 @@ public class Noeud {
     public boolean isEmpty(){
         return this.children.length == 0;
     }
+    public Noeud getParent(){
+        return this;
+    }
 
     public List<Noeud> CreateChildren(){
         List<Noeud> enfants = new ArrayList<>();
         for(int i = 0; i < this.children.length; i++){
-            enfants.add(new Noeud("C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\treeoflife_nodes_simplified.csv", "C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\treeoflife_links_simplified.csv", this.children[i]));
+            enfants.add(new Noeud("C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\treeoflife_nodes_simplified.csv", "C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\treeoflife_links_simplified.csv", this.children[i], this));
         }
         return enfants;
     }

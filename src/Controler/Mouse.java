@@ -3,41 +3,36 @@ package Controler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Pane;
 
 import java.awt.*;
 
 public class Mouse {
 
-    private ScrollPane scrollPane;
+    private Pane layout;
 
-    public Mouse(ScrollPane scrollPane) {
-        this.scrollPane = scrollPane;
+    public Mouse(Pane layout) {
+        this.layout = layout;
     }
 
     public void onMouseScroll(ScrollEvent event) {
         double scaleFactor = (event.getDeltaY() > 0) ? 1.1 : 0.9; // Facteur de zoom
 
-        // Sauvegardez les valeurs de défilement avant le zoom
-        double preHvalue = scrollPane.getHvalue();
-        double preVvalue = scrollPane.getVvalue();
+        // Coordonnées de la souris relatives au contenu du Pane
+        double mouseX = event.getX() - (layout.getWidth() - layout.getLayoutBounds().getWidth()) / 2;
+        double mouseY = event.getY() - (layout.getHeight() - layout.getLayoutBounds().getHeight()) / 2;
 
         // Appliquez le zoom
-        scrollPane.getContent().setScaleX(scrollPane.getContent().getScaleX() * scaleFactor);
-        scrollPane.getContent().setScaleY(scrollPane.getContent().getScaleY() * scaleFactor);
+        layout.setScaleX(layout.getScaleX() * scaleFactor);
+        layout.setScaleY(layout.getScaleY() * scaleFactor);
 
-        // Recalculez la position de la vue du ScrollPane pour rester centré sur la position de la souris avant le zoom
-        double mouseX = event.getX();
-        double mouseY = event.getY();
-        double postHvalue = scrollPane.getHvalue();
-        double postVvalue = scrollPane.getVvalue();
-        double deltaX = (mouseX - scrollPane.getViewportBounds().getWidth() / 2) / scrollPane.getContent().getScaleX();
-        double deltaY = (mouseY - scrollPane.getViewportBounds().getHeight() / 2) / scrollPane.getContent().getScaleY();
-        double newHvalue = postHvalue + deltaX;
-        double newVvalue = postVvalue + deltaY;
+        // Recalculez la position de la vue du Pane pour rester centré sur la position de la souris avant le zoom
+        double newTranslateX = layout.getTranslateX() - mouseX * (scaleFactor - 1);
+        double newTranslateY = layout.getTranslateY() - mouseY * (scaleFactor - 1);
 
-        // Ajustez la position de la vue du ScrollPane
-        scrollPane.setHvalue(newHvalue);
-        scrollPane.setVvalue(newVvalue);
+        // Ajustez la position de la vue du Pane
+        layout.setTranslateX(newTranslateX);
+        layout.setTranslateY(newTranslateY);
 
         // Empêchez le défilement de la page par défaut
         event.consume();
