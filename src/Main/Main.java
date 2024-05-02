@@ -77,16 +77,16 @@ public class Main extends Application {
             }
         });
 
-        Button likeButton = new Button();
+        /*Button likeButton = new Button();
         likeButton.setLayoutX(10); // Positionner le bouton en dessous du bouton de retour
         likeButton.setLayoutY(50);
         Image heartImage = new Image("C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\coeur.png"); // Remplacez par le chemin vers votre image
         ImageView heartImageView = new ImageView(heartImage);
         heartImageView.setFitWidth(30); // Ajustez la taille de l'image comme vous le souhaitez
         heartImageView.setPreserveRatio(true);
-        likeButton.setGraphic(heartImageView);
+        likeButton.setGraphic(heartImageView);*/
 
-        layout.getChildren().addAll(scrollPane, backButton, infoArea, likeButton);
+        layout.getChildren().addAll(scrollPane, backButton, infoArea);
         layout.addEventFilter(ScrollEvent.SCROLL, event -> {
             if (event.isControlDown()) {
                 mouse.onMouseScroll(event); // Appelle votre gestionnaire de souris pour le zoom
