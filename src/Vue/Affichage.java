@@ -141,5 +141,9 @@ public class Affichage {
         return noeudHistorique;
     }
 
+    public static Noeud getNoeudActuel() {
+        return noeudActuel;
+    }
+
 
 }

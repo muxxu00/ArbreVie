@@ -93,13 +93,13 @@ public class Noeud {
         vbox.getChildren().add(new Text("\n"));
 
         // Affichage de l'état de feuille
-        Text isLeafText = new Text("  isLeaf : " + this.isLeaf);
+        /*Text isLeafText = new Text("  isLeaf : " + this.isLeaf);
         vbox.getChildren().add(isLeafText);
         vbox.getChildren().add(new Text("\n"));
 
         Text istoLorgLinkText = new Text("  toLorgLink : " + this.toLorgLink);
         vbox.getChildren().add(istoLorgLinkText);
-        vbox.getChildren().add(new Text("\n"));
+        vbox.getChildren().add(new Text("\n"));*/
 
         // Création du lien
         String encodedName = this.name.replace(" ", "%20");
@@ -159,6 +159,9 @@ public class Noeud {
     }
     public Noeud getParent(){
         return this;
+    }
+    public int getId(){
+        return this.id;
     }
 
     public List<Noeud> CreateChildren(){

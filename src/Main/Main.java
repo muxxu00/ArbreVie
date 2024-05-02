@@ -7,6 +7,7 @@ import Controler.Mouse;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -18,6 +19,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Stack;
 
@@ -77,16 +82,54 @@ public class Main extends Application {
             }
         });
 
-        /*Button likeButton = new Button();
-        likeButton.setLayoutX(10); // Positionner le bouton en dessous du bouton de retour
-        likeButton.setLayoutY(50);
-        Image heartImage = new Image("C:\\Users\\Mathias\\Desktop\\PCII\\ArbreVie\\ressources\\coeur.png"); // Remplacez par le chemin vers votre image
-        ImageView heartImageView = new ImageView(heartImage);
-        heartImageView.setFitWidth(30); // Ajustez la taille de l'image comme vous le souhaitez
-        heartImageView.setPreserveRatio(true);
-        likeButton.setGraphic(heartImageView);*/
+        Image buttonImage = new Image("file:ressources/coeur.png");
+        ImageView imageView = new ImageView(buttonImage);
+        imageView.setFitWidth(30); // Réduire la largeur de l'image
+        imageView.setFitHeight(30); // Réduire la hauteur de l'image
+        Button favButton = new Button();
+        favButton.setGraphic(imageView);
+        favButton.setLayoutX(1852); // Positionner le bouton à la même position x que la fenêtre d'information
+        favButton.setLayoutY(10 + infoArea.getPrefHeight() + 10);
 
-        layout.getChildren().addAll(scrollPane, backButton, infoArea);
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.setMinWidth(200); // Définir la largeur du ComboBox
+        comboBox.setPromptText("espèces Favorites"); // Texte d'invite
+        comboBox.setLayoutX(1700); // Positionner le ComboBox à côté du bouton like
+        comboBox.setLayoutY(300);
+
+        // Ajouter un gestionnaire d'événements de clic au bouton like
+        favButton.setOnAction(event -> {
+            if (noeudActuel != null && noeudActuel.getParent() != null) {
+                String name = Affichage.getNoeudActuel().getName();
+                int id = Affichage.getNoeudActuel().getId();
+                comboBox.getItems().add(name + "," + id);
+            }
+        });
+
+        comboBox.setOnAction(event -> {
+            String selectedItem = comboBox.getSelectionModel().getSelectedItem();
+            String[] parts = selectedItem.split(",");
+            String name = parts[0];
+            String id = parts[1];
+            int idInt = Integer.parseInt(id);
+
+            String encodedName = name.replaceAll(" ", "%20");
+            String toLorgLink = String.format("http://tolweb.org/%s/%d", encodedName, idInt);
+            System.out.println(toLorgLink);
+
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    // Ouvrir la page web dans le navigateur par défaut
+                    Desktop.getDesktop().browse(new URI(toLorgLink));
+                } catch (IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        });
+
+        layout.getChildren().addAll(scrollPane, backButton, infoArea, favButton, comboBox);
         layout.addEventFilter(ScrollEvent.SCROLL, event -> {
             if (event.isControlDown()) {
                 mouse.onMouseScroll(event); // Appelle votre gestionnaire de souris pour le zoom
